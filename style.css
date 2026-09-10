@@ -1,0 +1,131 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f6ede4;
+  color: #5b3a2e;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin: 0 0 10px 0;
+  color: #8c6d54;
+  text-shadow: 1px 1px 0 rgba(255,255,255,0.6);
+}
+
+.topbar {
+  display: flex;
+  gap: 30px;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #a98467;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #8c6d54;
+}
+
+select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #a98467;
+}
+
+.message {
+  min-height: 24px;
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.message.win {
+  color: #2e7d32;
+}
+
+.message.lose {
+  color: #d32f2f;
+}
+
+.grid {
+  display: grid;
+  gap: 4px;
+  background: white;
+  padding: 10px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  user-select: none;
+}
+
+.grid.locked {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.cell {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.05s ease;
+}
+
+.cell:active {
+  transform: scale(0.93);
+}
+
+.cell.correct {
+  cursor: not-allowed;
+  box-shadow: inset 0 0 0 3px rgba(255,255,255,0.9);
+}
+
+.cell.wrong-locked {
+  cursor: not-allowed;
+}
+
+.mark {
+  font-weight: 900;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.mark.white {
+  color: #ffffff;
+  text-shadow: 0 0 2px rgba(0,0,0,0.55), 0 0 4px rgba(0,0,0,0.35);
+}
+
+.mark.red {
+  color: #e53935;
+  text-shadow: 0 0 2px rgba(0,0,0,0.45);
+}
