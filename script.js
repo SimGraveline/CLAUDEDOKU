@@ -1,11 +1,11 @@
-// ---------- Palette de couleurs pour les zones ----------
+// ---------- Color palette for regions ----------
 const PALETTE = [
   "#a3d977", "#f4a6c1", "#3fae5b", "#d98a3d",
   "#7b6fd6", "#7fc7e8", "#a3683f", "#b07fd6",
   "#e39a7a", "#2f9e8f"
 ];
 
-// états de case
+// cell states
 const EMPTY = 0;
 const WHITE_X = 1;
 const CORRECT_CAT = 2;
@@ -17,7 +17,7 @@ let size = 8;
 let regions = [];
 let solution = [];
 let state = [];
-let cellEls = []; // références DOM persistantes [r][c]
+let cellEls = []; // persistent DOM references [r][c]
 let errorCount = 0;
 let locked = false;
 
@@ -36,7 +36,7 @@ newGameBtn.addEventListener("click", () => {
 });
 clearBtn.addEventListener("click", clearGrid);
 
-// ==================== GÉNÉRATION ====================
+// ==================== GENERATION ====================
 
 function generateSolution(n) {
   const cols = [...Array(n).keys()];
@@ -100,7 +100,7 @@ function generateRegions(n, sol) {
   return grid;
 }
 
-// Retourne jusqu'à `limit` solutions distinctes pour une grille de régions donnée
+// Returns up to `limit` distinct solutions for a given region grid
 function findSolutions(n, regs, limit) {
   const solutions = [];
   const usedCols = new Set();
@@ -133,7 +133,7 @@ function arraysEqual(a, b) {
   return a.length === b.length && a.every((v, i) => v === b[i]);
 }
 
-// Vérifie que chaque case a au moins un voisin (haut/bas/gauche/droite) de la même couleur
+// Checks that every cell has at least one same-color neighbor (up/down/left/right)
 function isValidAdjacency(n, regs) {
   for (let r = 0; r < n; r++) {
     for (let c = 0; c < n; c++) {
@@ -153,7 +153,7 @@ function isValidAdjacency(n, regs) {
   return true;
 }
 
-// Génère une grille garantie à solution UNIQUE et sans case de couleur isolée
+// Generates a grid guaranteed to have a UNIQUE solution and no isolated color cell
 function generateUniquePuzzle(n) {
   const maxOuterAttempts = 150;
   const maxRepairIterations = 60;
@@ -186,16 +186,16 @@ function generateUniquePuzzle(n) {
     if (success && isValidAdjacency(n, regs)) {
       return { sol, regs };
     }
-    // sinon: tentative rejetée (solution non-unique OU case isolée), on recommence
+    // otherwise: attempt rejected (non-unique solution OR isolated cell), retry
   }
 
-  console.warn("Grille unique + sans îlot non trouvée après plusieurs tentatives — grille de secours utilisée.");
+  console.warn("Could not find a unique, island-free grid after many attempts — using fallback grid.");
   const sol = generateSolution(n);
   const regs = generateRegions(n, sol);
   return { sol, regs };
 }
 
-// ==================== ÉTAT DE PARTIE ====================
+// ==================== GAME STATE ====================
 
 function newGame() {
   const puzzle = generateUniquePuzzle(size);
@@ -221,7 +221,7 @@ function clearGrid() {
   renderGrid();
 }
 
-// ==================== RENDU ====================
+// ==================== RENDERING ====================
 
 function renderGrid() {
   gridEl.style.gridTemplateColumns = `repeat(${size}, 50px)`;
@@ -250,7 +250,7 @@ function renderGrid() {
   updateCatCount();
 }
 
-// Met à jour UNE case en place, sans jamais toucher au reste du DOM
+// Updates ONE cell in place, without ever touching the rest of the DOM
 function updateCellVisual(r, c) {
   const cellEl = cellEls[r][c];
   const s = state[r][c];
@@ -278,7 +278,7 @@ function updateCatCount() {
 
 // ==================== INTERACTIONS ====================
 
-// -- Drag-to-paint des X --
+// -- Drag-to-paint X marks --
 let isPointerDown = false;
 let dragOccurred = false;
 let paintValue = null;
@@ -295,7 +295,7 @@ gridEl.addEventListener("mousedown", (e) => {
   const s = state[r][c];
   if (s === CORRECT_CAT || s === RED_X) return;
 
-  e.preventDefault(); // évite la sélection de texte pendant le drag
+  e.preventDefault(); // avoid text selection while dragging
   isPointerDown = true;
   dragOccurred = false;
   paintValue = s === WHITE_X ? EMPTY : WHITE_X;
@@ -335,7 +335,7 @@ window.addEventListener("mouseup", () => {
   lastPaintedCell = null;
 });
 
-// -- Simple clic vs double-clic (détection maison, indépendante du DOM) --
+// -- Single click vs double click (custom detection, independent of DOM identity) --
 let pendingSingleClick = null;
 let lastClickTime = 0;
 let lastClickCell = null;
@@ -376,7 +376,7 @@ function handleCellClick(r, c) {
 function onSingleClick(r, c) {
   if (locked) return;
   const s = state[r][c];
-  if (s === CORRECT_CAT || s === RED_X) return; // X rouge et chat = verrouillés
+  if (s === CORRECT_CAT || s === RED_X) return; // red X and face = locked
   state[r][c] = s === WHITE_X ? EMPTY : WHITE_X;
   updateCellVisual(r, c);
 }
@@ -399,11 +399,11 @@ function onDoubleClick(r, c) {
 
     if (errorCount >= 3) {
       locked = true;
-      messageEl.textContent = "💀 Perdu — 3 erreurs";
+      messageEl.textContent = "💀 You lost — 3 errors";
       messageEl.className = "message lose";
       gridEl.classList.add("locked");
     } else {
-      messageEl.textContent = `❌ Mauvais emplacement (${errorCount}/3)`;
+      messageEl.textContent = `❌ Wrong spot (${errorCount}/3)`;
       messageEl.className = "message lose";
     }
   }
@@ -417,12 +417,12 @@ function checkWin() {
 
   if (count === size) {
     locked = true;
-    messageEl.textContent = "🎉 Gagné!";
+    messageEl.textContent = "🎉 You won!";
     messageEl.className = "message win";
     gridEl.classList.add("locked");
   }
 }
 
-// ==================== DÉMARRAGE ====================
+// ==================== STARTUP ====================
 
 newGame();
